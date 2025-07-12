@@ -19,28 +19,6 @@ import { Input } from '@/components/ui/input';
 export const Footer: React.FC = () => {
   return (
     <footer className="bg-tech-black text-white">
-      {/* Newsletter Section */}
-      <div className="border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="text-center">
-            <h3 className="text-2xl font-bold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 mb-6 max-w-2xl mx-auto">
-              Subscribe to our newsletter and be the first to know about new products, 
-              exclusive deals, and tech insights.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input
-                type="email"
-                placeholder="Enter your email"
-                className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
-              />
-              <Button variant="electric" className="whitespace-nowrap">
-                Subscribe
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -107,71 +85,25 @@ export const Footer: React.FC = () => {
                 <MapPin className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
                 <div>
                   <p className="text-gray-300">
-                    123 Tech Street<br />
-                    Silicon Valley, CA 94105<br />
-                    United States
+                    Rajshahi University of Engineering<br />
+                    and Technology<br />
+                    Rajshahi, Bangladesh
                   </p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
                 <Phone className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-gray-300">+1 (555) 123-4567</p>
+                <p className="text-gray-300">+8801*******</p>
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-primary flex-shrink-0" />
-                <p className="text-gray-300">support@shadman.com</p>
+                <p className="text-gray-300">shadmanaziz5@gmail.com</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Features Bar */}
-      <div className="border-y border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                <Truck className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">Free Shipping</p>
-                <p className="text-sm text-gray-300">On orders over $99</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                <RefreshCw className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">Easy Returns</p>
-                <p className="text-sm text-gray-300">30-day return policy</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                <Shield className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">Secure Payment</p>
-                <p className="text-sm text-gray-300">SSL encrypted</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                <CreditCard className="w-6 h-6 text-primary" />
-              </div>
-              <div>
-                <p className="font-semibold">Payment Options</p>
-                <p className="text-sm text-gray-300">Multiple methods</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Bottom Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -202,8 +134,8 @@ export const Footer: React.FC = () => {
               <div className="w-8 h-5 bg-gray-600 rounded flex items-center justify-center">
                 <span className="text-xs font-bold text-white">MC</span>
               </div>
-              <div className="w-8 h-5 bg-gray-600 rounded flex items-center justify-center">
-                <span className="text-xs font-bold text-white">PP</span>
+              <div className="w-8 h-5 bg-pink-500 rounded flex items-center justify-center">
+                <span className="text-xs font-bold text-white">bKash</span>
               </div>
             </div>
           </div>

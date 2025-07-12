@@ -86,16 +86,12 @@ const Checkout: React.FC = () => {
                     <Input id="city" required />
                   </div>
                   <div>
-                    <Label htmlFor="state">State</Label>
-                    <Input id="state" required />
+                    <Label htmlFor="division">Division</Label>
+                    <Input id="division" required />
                   </div>
                   <div>
-                    <Label htmlFor="zip">ZIP Code</Label>
-                    <Input id="zip" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="country">Country</Label>
-                    <Input id="country" defaultValue="United States" required />
+                    <Label htmlFor="district">District</Label>
+                    <Input id="district" required />
                   </div>
                 </div>
               </div>
@@ -110,7 +106,7 @@ const Checkout: React.FC = () => {
                 <Tabs defaultValue="card" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="card">Credit Card</TabsTrigger>
-                    <TabsTrigger value="paypal">PayPal</TabsTrigger>
+                    <TabsTrigger value="bkash">bKash</TabsTrigger>
                   </TabsList>
                   
                   <TabsContent value="card" className="space-y-4">
@@ -134,10 +130,10 @@ const Checkout: React.FC = () => {
                     </div>
                   </TabsContent>
                   
-                  <TabsContent value="paypal" className="text-center py-8">
-                    <p className="text-tech-gray mb-4">You will be redirected to PayPal to complete your payment.</p>
-                    <Button type="button" variant="outline" className="bg-yellow-400 text-black hover:bg-yellow-500">
-                      Pay with PayPal
+                  <TabsContent value="bkash" className="text-center py-8">
+                    <p className="text-tech-gray mb-4">You will be redirected to bKash to complete your payment.</p>
+                    <Button type="button" variant="outline" className="bg-pink-500 text-white hover:bg-pink-600">
+                      Pay with bKash
                     </Button>
                   </TabsContent>
                 </Tabs>
@@ -156,7 +152,7 @@ const Checkout: React.FC = () => {
                 ) : (
                   <>
                     <Lock className="w-5 h-5 mr-2" />
-                    Place Order - ${total.toFixed(2)}
+                    Place Order - ৳{total.toFixed(2)}
                   </>
                 )}
               </Button>
@@ -182,7 +178,7 @@ const Checkout: React.FC = () => {
                       <p className="text-sm text-tech-gray">Qty: {item.quantity}</p>
                     </div>
                     <p className="font-medium">
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      ৳{(item.product.price * item.quantity).toLocaleString()}
                     </p>
                   </div>
                 ))}
@@ -194,22 +190,22 @@ const Checkout: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Subtotal</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium">৳{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Shipping</span>
                   <span className="font-medium">
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? 'Free' : `৳${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Tax</span>
-                  <span className="font-medium">${tax.toFixed(2)}</span>
+                  <span className="font-medium">৳{tax.toFixed(2)}</span>
                 </div>
                 <hr />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span className="text-primary">${total.toFixed(2)}</span>
+                  <span className="text-primary">৳{total.toFixed(2)}</span>
                 </div>
               </div>
 

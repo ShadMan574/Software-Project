@@ -13,10 +13,6 @@ export const Hero: React.FC = () => {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div className="animate-fade-in">
-            <div className="flex items-center space-x-2 mb-6">
-              <Star className="w-5 h-5 text-yellow-400 fill-current" />
-              <span className="text-sm font-medium text-tech-gray">Rated #1 Electronics Store</span>
-            </div>
             
             <h1 className="text-4xl lg:text-6xl font-bold text-tech-black mb-6 leading-tight">
               Premium
@@ -29,20 +25,6 @@ export const Hero: React.FC = () => {
               from top brands. Quality guaranteed, fast shipping, and unbeatable prices.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
-              <Link to="/products">
-                <Button variant="hero" size="xl" className="w-full sm:w-auto group">
-                  Shop Now
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </Link>
-              
-              <Link to="/products?category=smartphones">
-                <Button variant="outline" size="xl" className="w-full sm:w-auto border-2">
-                  View Smartphones
-                </Button>
-              </Link>
-            </div>
             
             {/* Features */}
             <div className="grid grid-cols-3 gap-6">
@@ -82,27 +64,11 @@ export const Hero: React.FC = () => {
           <div className="relative animate-slide-up">
             <div className="relative z-10">
               <img
-                src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop"
-                alt="Premium Electronics"
+                src="https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=600&fit=crop"
+                alt="Electronics Store"
                 className="w-full h-auto rounded-2xl shadow-strong"
               />
               
-              {/* Floating Cards */}
-              <div className="absolute -top-4 -left-4 bg-white p-4 rounded-xl shadow-medium animate-bounce">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                    <span className="text-green-600 text-sm">✓</span>
-                  </div>
-                  <span className="text-sm font-semibold">In Stock</span>
-                </div>
-              </div>
-              
-              <div className="absolute -bottom-4 -right-4 bg-white p-4 rounded-xl shadow-medium">
-                <div className="text-center">
-                  <p className="text-2xl font-bold text-primary">99%</p>
-                  <p className="text-xs text-tech-gray">Customer Satisfaction</p>
-                </div>
-              </div>
             </div>
             
             {/* Background Decoration */}

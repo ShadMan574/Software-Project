@@ -61,23 +61,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
   return (
     <div className={`product-card bg-white rounded-xl shadow-soft border group relative overflow-hidden ${className}`}>
       {/* Badges */}
-      <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
-        {product.isNew && (
-          <Badge className="bg-green-500 hover:bg-green-600 text-white">
-            New
-          </Badge>
-        )}
-        {product.discount && (
-          <Badge className="bg-red-500 hover:bg-red-600 text-white">
-            -{product.discount}%
-          </Badge>
-        )}
-        {product.isPopular && (
-          <Badge className="bg-orange-500 hover:bg-orange-600 text-white">
-            Popular
-          </Badge>
-        )}
-      </div>
 
       {/* Wishlist Button */}
       <button
@@ -119,7 +102,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
             <div className="flex items-center gap-1">
               <Star className="w-3 h-3 text-yellow-400 fill-current" />
               <span className="text-xs text-tech-gray">
-                {product.rating} ({product.reviews})
+                {product.rating}
               </span>
             </div>
           </div>
@@ -132,25 +115,18 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
           {/* Price */}
           <div className="flex items-center gap-2 mb-4">
             <span className="text-xl font-bold text-tech-black">
-              ${product.price.toLocaleString()}
+              ৳{product.price.toLocaleString()}
             </span>
-            {product.originalPrice && (
-              <span className="text-sm text-tech-gray line-through">
-                ${product.originalPrice.toLocaleString()}
-              </span>
-            )}
           </div>
 
           {/* Stock Status */}
           <div className="flex items-center justify-between mb-4">
             <span className={`text-xs px-2 py-1 rounded-full ${
-              product.stock > 10 
+              product.stock > 0 
                 ? 'bg-green-100 text-green-700' 
-                : product.stock > 0 
-                ? 'bg-yellow-100 text-yellow-700'
                 : 'bg-red-100 text-red-700'
             }`}>
-              {product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock'}
+              {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
             </span>
           </div>
         </div>

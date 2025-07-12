@@ -115,11 +115,6 @@ const ProductDetail: React.FC = () => {
           {/* Product Info */}
           <div className="space-y-6">
             {/* Badges */}
-            <div className="flex gap-2">
-              {product.isNew && <Badge className="bg-green-500">New</Badge>}
-              {product.isPopular && <Badge className="bg-orange-500">Popular</Badge>}
-              {product.discount && <Badge className="bg-red-500">-{product.discount}%</Badge>}
-            </div>
 
             {/* Title and Brand */}
             <div>
@@ -145,7 +140,7 @@ const ProductDetail: React.FC = () => {
                   />
                 ))}
                 <span className="ml-2 text-sm text-tech-gray">
-                  {product.rating} ({product.reviews} reviews)
+                  {product.rating}
                 </span>
               </div>
             </div>
@@ -153,13 +148,8 @@ const ProductDetail: React.FC = () => {
             {/* Price */}
             <div className="flex items-center space-x-4">
               <span className="text-3xl font-bold text-tech-black">
-                ${product.price.toLocaleString()}
+                ৳{product.price.toLocaleString()}
               </span>
-              {product.originalPrice && (
-                <span className="text-xl text-tech-gray line-through">
-                  ${product.originalPrice.toLocaleString()}
-                </span>
-              )}
             </div>
 
             {/* Description */}
@@ -173,7 +163,7 @@ const ProductDetail: React.FC = () => {
                 product.stock > 10 ? 'bg-green-500' : product.stock > 0 ? 'bg-yellow-500' : 'bg-red-500'
               }`}></span>
               <span className="text-sm font-medium">
-                {product.stock > 10 ? 'In Stock' : product.stock > 0 ? `Only ${product.stock} left` : 'Out of Stock'}
+                {product.stock > 0 ? 'In Stock' : 'Out of Stock'}
               </span>
             </div>
 

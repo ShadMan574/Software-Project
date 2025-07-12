@@ -98,7 +98,7 @@ const Cart: React.FC = () => {
                     </Link>
                     <p className="text-sm text-tech-gray">{item.product.brand}</p>
                     <p className="text-lg font-bold text-tech-black mt-1">
-                      ${item.product.price.toLocaleString()}
+                      ৳{item.product.price.toLocaleString()}
                     </p>
                   </div>
 
@@ -125,7 +125,7 @@ const Cart: React.FC = () => {
                   {/* Item Total */}
                   <div className="text-right">
                     <p className="font-bold text-tech-black">
-                      ${(item.product.price * item.quantity).toLocaleString()}
+                      ৳{(item.product.price * item.quantity).toLocaleString()}
                     </p>
                   </div>
 
@@ -174,29 +174,29 @@ const Cart: React.FC = () => {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Subtotal ({state.itemCount} items)</span>
-                  <span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium">৳{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Shipping</span>
                   <span className="font-medium">
-                    {shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}
+                    {shipping === 0 ? 'Free' : `৳${shipping.toFixed(2)}`}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-tech-gray">Tax</span>
-                  <span className="font-medium">${tax.toFixed(2)}</span>
+                  <span className="font-medium">৳{tax.toFixed(2)}</span>
                 </div>
                 <hr />
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total</span>
-                  <span className="text-primary">${total.toFixed(2)}</span>
+                  <span className="text-primary">৳{total.toFixed(2)}</span>
                 </div>
               </div>
 
               {shipping > 0 && (
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
                   <p className="text-sm text-yellow-800">
-                    Add ${(99 - subtotal).toFixed(2)} more for free shipping!
+                    Add ৳{(99 - subtotal).toFixed(2)} more for free shipping!
                   </p>
                 </div>
               )}

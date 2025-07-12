@@ -35,8 +35,7 @@ export const products: Product[] = [
   {
     id: '1',
     name: 'iPhone 15 Pro Max',
-    price: 1199,
-    originalPrice: 1299,
+    price: 140000,
     category: 'smartphones',
     brand: 'Apple',
     image: 'https://images.unsplash.com/photo-1592899677977-9c10ca588bbd?w=500&h=500&fit=crop',
@@ -63,13 +62,12 @@ export const products: Product[] = [
     rating: 4.8,
     reviews: 2847,
     stock: 15,
-    isPopular: true,
-    discount: 8
+    isPopular: true
   },
   {
     id: '2',
     name: 'MacBook Pro 16"',
-    price: 2499,
+    price: 290000,
     category: 'laptops',
     brand: 'Apple',
     image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&h=500&fit=crop',
@@ -101,7 +99,7 @@ export const products: Product[] = [
   {
     id: '3',
     name: 'Samsung Galaxy S24 Ultra',
-    price: 1299,
+    price: 150000,
     category: 'smartphones',
     brand: 'Samsung',
     image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=500&h=500&fit=crop',
@@ -132,7 +130,7 @@ export const products: Product[] = [
   {
     id: '4',
     name: 'Apple Watch Series 9',
-    price: 429,
+    price: 50000,
     category: 'smartwatches',
     brand: 'Apple',
     image: 'https://images.unsplash.com/photo-1434493789847-2f02dc6ca35d?w=500&h=500&fit=crop',
@@ -163,7 +161,7 @@ export const products: Product[] = [
   {
     id: '5',
     name: 'iPad Pro 12.9"',
-    price: 1099,
+    price: 125000,
     category: 'tablets',
     brand: 'Apple',
     image: 'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&h=500&fit=crop',
@@ -193,8 +191,7 @@ export const products: Product[] = [
   {
     id: '6',
     name: 'Sony WH-1000XM5',
-    price: 399,
-    originalPrice: 429,
+    price: 45000,
     category: 'accessories',
     brand: 'Sony',
     image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=500&h=500&fit=crop',
@@ -220,13 +217,12 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 2156,
     stock: 42,
-    isPopular: true,
-    discount: 7
+    isPopular: true
   },
   {
     id: '7',
     name: 'Dell XPS 13',
-    price: 1299,
+    price: 150000,
     category: 'laptops',
     brand: 'Dell',
     image: 'https://images.unsplash.com/photo-1588872657578-7efd1f1555ed?w=500&h=500&fit=crop',
@@ -256,7 +252,7 @@ export const products: Product[] = [
   {
     id: '8',
     name: 'Xbox Series X',
-    price: 499,
+    price: 58000,
     category: 'gaming',
     brand: 'Microsoft',
     image: 'https://images.unsplash.com/photo-1621259182978-fbf93132d53d?w=500&h=500&fit=crop',
@@ -287,12 +283,12 @@ export const products: Product[] = [
   {
     id: '9',
     name: 'Google Pixel 8 Pro',
-    price: 999,
+    price: 115000,
     category: 'smartphones',
     brand: 'Google',
-    image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=500&h=500&fit=crop',
+    image: 'https://images.unsplash.com/photo-1607651851512-657fdb5138ac?w=500&h=500&fit=crop',
     images: [
-      'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&h=800&fit=crop'
+      'https://images.unsplash.com/photo-1607651851512-657fdb5138ac?w=800&h=800&fit=crop'
     ],
     description: 'AI-powered photography, pure Android experience, and 7 years of updates.',
     specifications: {
@@ -317,7 +313,7 @@ export const products: Product[] = [
   {
     id: '10',
     name: 'Samsung Galaxy Tab S9 Ultra',
-    price: 1199,
+    price: 140000,
     category: 'tablets',
     brand: 'Samsung',
     image: 'https://images.unsplash.com/photo-1561154464-82e9adf32764?w=500&h=500&fit=crop',
