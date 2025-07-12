@@ -10,7 +10,6 @@ export interface Product {
   description: string;
   specifications: Record<string, string>;
   features: string[];
-  rating: number;
   reviews: number;
   stock: number;
   isPopular?: boolean;
@@ -59,8 +58,7 @@ export const products: Product[] = [
       'USB-C connectivity',
       '5G capable'
     ],
-    rating: 4.8,
-    reviews: 2847,
+    reviews: 0,
     stock: 15,
     isPopular: true
   },
@@ -91,8 +89,7 @@ export const products: Product[] = [
       'Studio-quality mics',
       'Magic Keyboard with Touch ID'
     ],
-    rating: 4.9,
-    reviews: 1239,
+    reviews: 0,
     stock: 8,
     isNew: true
   },
@@ -122,8 +119,7 @@ export const products: Product[] = [
       '100x Space Zoom',
       'All-day battery'
     ],
-    rating: 4.7,
-    reviews: 1856,
+    reviews: 0,
     stock: 22,
     isPopular: true
   },
@@ -153,8 +149,7 @@ export const products: Product[] = [
       'Always-On Retina display',
       'Carbon neutral'
     ],
-    rating: 4.6,
-    reviews: 3421,
+    reviews: 0,
     stock: 35,
     isNew: true
   },
@@ -184,8 +179,7 @@ export const products: Product[] = [
       'Magic Keyboard compatible',
       'Professional cameras'
     ],
-    rating: 4.8,
-    reviews: 892,
+    reviews: 0,
     stock: 18
   },
   {
@@ -214,8 +208,7 @@ export const products: Product[] = [
       'Speak-to-Chat technology',
       'Multipoint connection'
     ],
-    rating: 4.7,
-    reviews: 2156,
+    reviews: 0,
     stock: 42,
     isPopular: true
   },
@@ -245,8 +238,7 @@ export const products: Product[] = [
       'Backlit keyboard',
       'Windows Hello'
     ],
-    rating: 4.5,
-    reviews: 756,
+    reviews: 0,
     stock: 12
   },
   {
@@ -275,8 +267,7 @@ export const products: Product[] = [
       'Xbox Game Pass',
       'Backward compatibility'
     ],
-    rating: 4.8,
-    reviews: 3247,
+    reviews: 0,
     stock: 25,
     isPopular: true
   },
@@ -306,8 +297,7 @@ export const products: Product[] = [
       '7 years of updates',
       'Titan M security'
     ],
-    rating: 4.6,
-    reviews: 1432,
+    reviews: 0,
     stock: 29
   },
   {
@@ -336,8 +326,7 @@ export const products: Product[] = [
       'IP68 water resistance',
       'Quad speakers'
     ],
-    rating: 4.7,
-    reviews: 543,
+    reviews: 0,
     stock: 14,
     isNew: true
   }

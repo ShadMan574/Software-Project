@@ -126,24 +126,6 @@ const ProductDetail: React.FC = () => {
               </h1>
             </div>
 
-            {/* Rating */}
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`w-5 h-5 ${
-                      i < Math.floor(product.rating)
-                        ? 'text-yellow-400 fill-current'
-                        : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-                <span className="ml-2 text-sm text-tech-gray">
-                  {product.rating}
-                </span>
-              </div>
-            </div>
 
             {/* Price */}
             <div className="flex items-center space-x-4">

@@ -99,12 +99,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, className = '
             <span className="text-xs text-primary font-medium uppercase tracking-wider">
               {product.brand}
             </span>
-            <div className="flex items-center gap-1">
-              <Star className="w-3 h-3 text-yellow-400 fill-current" />
-              <span className="text-xs text-tech-gray">
-                {product.rating}
-              </span>
-            </div>
           </div>
 
           {/* Product Name */}

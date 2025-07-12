@@ -68,9 +68,6 @@ const Products: React.FC = () => {
       case 'newest':
         result.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
         break;
-      case 'rating':
-        result.sort((a, b) => b.rating - a.rating);
-        break;
       default:
         result.sort((a, b) => (b.isPopular ? 1 : 0) - (a.isPopular ? 1 : 0));
     }
@@ -227,7 +224,7 @@ const Products: React.FC = () => {
                   <SelectItem value="newest">Newest First</SelectItem>
                   <SelectItem value="price-low">Price: Low to High</SelectItem>
                   <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  <SelectItem value="rating">Highest Rated</SelectItem>
+                  
                 </SelectContent>
               </Select>
             </div>

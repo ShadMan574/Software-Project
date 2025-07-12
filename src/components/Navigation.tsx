@@ -49,12 +49,6 @@ export const Navigation: React.FC = () => {
 
   return (
     <nav className="bg-white shadow-soft border-b sticky top-0 z-50">
-      {/* Top Banner */}
-      <div className="bg-gradient-primary text-white py-2">
-        <div className="max-w-7xl mx-auto px-4 text-center text-sm">
-          🚀 Free shipping on orders over $99 | 30-day returns | 24/7 support
-        </div>
-      </div>
 
       {/* Main Navigation */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
