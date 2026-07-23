@@ -35,7 +35,7 @@ export const Navigation: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
   const { state: cartState } = useCart();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, isAdmin, logout } = useAuth();
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -166,29 +166,13 @@ export const Navigation: React.FC = () => {
                 </Button>
                 <div className="absolute top-full right-0 mt-2 w-48 bg-white shadow-medium rounded-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="p-2">
-                    <Link
-                      to="/profile"
-                      className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
-                    >
-                      My Profile
-                    </Link>
-                    <Link
-                      to="/orders"
-                      className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
-                    >
-                      Order History
-                    </Link>
-                    <Link
-                      to="/wishlist"
-                      className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors"
-                    >
-                      Wishlist
-                    </Link>
+                    <Link to="/profile" className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors">My Profile</Link>
+                    <Link to="/profile" className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors">Order History</Link>
+                    {isAdmin && (
+                      <Link to="/admin" className="block px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors text-primary font-semibold">Admin Dashboard</Link>
+                    )}
                     <hr className="my-2" />
-                    <button
-                      onClick={logout}
-                      className="block w-full text-left px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors text-destructive"
-                    >
+                    <button onClick={logout} className="block w-full text-left px-3 py-2 text-sm hover:bg-muted rounded-md transition-colors text-destructive">
                       Logout
                     </button>
                   </div>

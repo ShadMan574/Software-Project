@@ -1,14 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  avatar?: string;
-  addresses: Address[];
-  orders: Order[];
-  wishlist: string[];
-}
+import { supabase } from '@/integrations/supabase/client';
+import type { Session } from '@supabase/supabase-js';
 
 export interface Address {
   id: string;
@@ -26,207 +18,170 @@ export interface Address {
 export interface Order {
   id: string;
   date: string;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: string;
   items: any[];
   total: number;
-  shippingAddress: Address;
+  shippingAddress: any;
 }
 
-interface AuthState {
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+  addresses: Address[];
+  orders: Order[];
+  wishlist: string[];
+}
+
+interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-}
-
-interface AuthContextType extends AuthState {
-  login: (email: string, password: string) => Promise<boolean>;
-  signup: (name: string, email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  updateProfile: (data: Partial<User>) => void;
-  addAddress: (address: Omit<Address, 'id'>) => void;
-  updateAddress: (id: string, address: Partial<Address>) => void;
-  deleteAddress: (id: string) => void;
-  addToWishlist: (productId: string) => void;
-  removeFromWishlist: (productId: string) => void;
+  isAdmin: boolean;
+  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  logout: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
+  refreshUserData: () => Promise<void>;
+  addAddress: (address: Omit<Address, 'id'>) => Promise<void>;
+  deleteAddress: (id: string) => Promise<void>;
+  addToWishlist: (productId: string) => Promise<void>;
+  removeFromWishlist: (productId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [state, setState] = useState<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: true
-  });
+  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadUserData = async (userId: string, email: string) => {
+    const [profileRes, rolesRes, addressesRes, wishlistRes, ordersRes] = await Promise.all([
+      supabase.from('profiles').select('*').eq('id', userId).maybeSingle(),
+      supabase.from('user_roles').select('role').eq('user_id', userId),
+      supabase.from('addresses').select('*').eq('user_id', userId),
+      supabase.from('wishlist').select('product_id').eq('user_id', userId),
+      supabase.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+    ]);
+
+    const profile = profileRes.data;
+    setIsAdmin((rolesRes.data ?? []).some((r: any) => r.role === 'admin'));
+
+    setUser({
+      id: userId,
+      name: profile?.name ?? email.split('@')[0],
+      email: profile?.email ?? email,
+      avatar: profile?.avatar ?? undefined,
+      addresses: (addressesRes.data ?? []).map((a: any) => ({
+        id: a.id, type: a.type, firstName: a.first_name, lastName: a.last_name,
+        address: a.address, city: a.city, state: a.state, zipCode: a.zip_code,
+        country: a.country, isDefault: a.is_default,
+      })),
+      orders: (ordersRes.data ?? []).map((o: any) => ({
+        id: o.id, date: o.created_at, status: o.status, items: [],
+        total: Number(o.total), shippingAddress: o.shipping_address,
+      })),
+      wishlist: (wishlistRes.data ?? []).map((w: any) => w.product_id),
+    });
+  };
 
   useEffect(() => {
-    // Check for existing auth on mount
-    const savedUser = localStorage.getItem('shadman-user');
-    if (savedUser) {
-      try {
-        const user = JSON.parse(savedUser);
-        setState({
-          user,
-          isAuthenticated: true,
-          isLoading: false
-        });
-      } catch (error) {
-        console.error('Failed to load user from localStorage:', error);
-        setState(prev => ({ ...prev, isLoading: false }));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession);
+      if (newSession?.user) {
+        setTimeout(() => {
+          loadUserData(newSession.user.id, newSession.user.email ?? '');
+        }, 0);
+      } else {
+        setUser(null);
+        setIsAdmin(false);
       }
-    } else {
-      setState(prev => ({ ...prev, isLoading: false }));
-    }
+    });
+
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      setSession(s);
+      if (s?.user) {
+        loadUserData(s.user.id, s.user.email ?? '').finally(() => setIsLoading(false));
+      } else {
+        setIsLoading(false);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Demo credentials
-    if (email === 'demo@shadman.com' && password === 'demo123') {
-      const user: User = {
-        id: '1',
-        name: 'Demo User',
-        email: 'demo@shadman.com',
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-        addresses: [],
-        orders: [],
-        wishlist: []
-      };
-      
-      setState({
-        user,
-        isAuthenticated: true,
-        isLoading: false
-      });
-      
-      localStorage.setItem('shadman-user', JSON.stringify(user));
-      return true;
-    }
-    
-    return false;
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   };
 
-  const signup = async (name: string, email: string, password: string): Promise<boolean> => {
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const user: User = {
-      id: Date.now().toString(),
-      name,
-      email,
-      addresses: [],
-      orders: [],
-      wishlist: []
-    };
-    
-    setState({
-      user,
-      isAuthenticated: true,
-      isLoading: false
+  const signup = async (name: string, email: string, password: string) => {
+    const { error } = await supabase.auth.signUp({
+      email, password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/`,
+        data: { name },
+      },
     });
-    
-    localStorage.setItem('shadman-user', JSON.stringify(user));
-    return true;
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   };
 
-  const logout = () => {
-    setState({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
     });
-    localStorage.removeItem('shadman-user');
+    if (error) return { success: false, error: error.message };
+    return { success: true };
   };
 
-  const updateProfile = (data: Partial<User>) => {
-    if (!state.user) return;
-    
-    const updatedUser = { ...state.user, ...data };
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
+  const refreshUserData = async () => {
+    if (session?.user) await loadUserData(session.user.id, session.user.email ?? '');
   };
 
-  const addAddress = (address: Omit<Address, 'id'>) => {
-    if (!state.user) return;
-    
-    const newAddress: Address = {
-      ...address,
-      id: Date.now().toString()
-    };
-    
-    const updatedUser = {
-      ...state.user,
-      addresses: [...state.user.addresses, newAddress]
-    };
-    
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
+  const addAddress = async (a: Omit<Address, 'id'>) => {
+    if (!user) return;
+    await supabase.from('addresses').insert({
+      user_id: user.id, type: a.type, first_name: a.firstName, last_name: a.lastName,
+      address: a.address, city: a.city, state: a.state, zip_code: a.zipCode,
+      country: a.country, is_default: a.isDefault,
+    });
+    await refreshUserData();
   };
 
-  const updateAddress = (id: string, addressData: Partial<Address>) => {
-    if (!state.user) return;
-    
-    const updatedUser = {
-      ...state.user,
-      addresses: state.user.addresses.map(addr =>
-        addr.id === id ? { ...addr, ...addressData } : addr
-      )
-    };
-    
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
+  const deleteAddress = async (id: string) => {
+    await supabase.from('addresses').delete().eq('id', id);
+    await refreshUserData();
   };
 
-  const deleteAddress = (id: string) => {
-    if (!state.user) return;
-    
-    const updatedUser = {
-      ...state.user,
-      addresses: state.user.addresses.filter(addr => addr.id !== id)
-    };
-    
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
+  const addToWishlist = async (productId: string) => {
+    if (!user) return;
+    await supabase.from('wishlist').insert({ user_id: user.id, product_id: productId });
+    setUser({ ...user, wishlist: [...user.wishlist, productId] });
   };
 
-  const addToWishlist = (productId: string) => {
-    if (!state.user) return;
-    
-    const updatedUser = {
-      ...state.user,
-      wishlist: [...state.user.wishlist, productId]
-    };
-    
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
-  };
-
-  const removeFromWishlist = (productId: string) => {
-    if (!state.user) return;
-    
-    const updatedUser = {
-      ...state.user,
-      wishlist: state.user.wishlist.filter(id => id !== productId)
-    };
-    
-    setState(prev => ({ ...prev, user: updatedUser }));
-    localStorage.setItem('shadman-user', JSON.stringify(updatedUser));
+  const removeFromWishlist = async (productId: string) => {
+    if (!user) return;
+    await supabase.from('wishlist').delete().eq('user_id', user.id).eq('product_id', productId);
+    setUser({ ...user, wishlist: user.wishlist.filter(id => id !== productId) });
   };
 
   return (
     <AuthContext.Provider value={{
-      ...state,
-      login,
-      signup,
-      logout,
-      updateProfile,
-      addAddress,
-      updateAddress,
-      deleteAddress,
-      addToWishlist,
-      removeFromWishlist
+      user,
+      isAuthenticated: !!session,
+      isLoading,
+      isAdmin,
+      login, signup, logout, resetPassword, refreshUserData,
+      addAddress, deleteAddress, addToWishlist, removeFromWishlist,
     }}>
       {children}
     </AuthContext.Provider>
@@ -234,9 +189,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
+  return ctx;
 };

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
-import { ArrowLeft, Lock, CreditCard, MapPin, User } from 'lucide-react';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { ArrowLeft, Lock, CreditCard, MapPin } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -10,16 +10,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout: React.FC = () => {
   const { state, clearCart } = useCart();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
 
-  if (state.items.length === 0) {
-    return <Navigate to="/cart" replace />;
-  }
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  if (state.items.length === 0) return <Navigate to="/cart" replace />;
 
   const subtotal = state.total;
   const shipping = subtotal > 99 ? 0 : 15;
@@ -29,19 +30,33 @@ const Checkout: React.FC = () => {
   const handlePlaceOrder = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsProcessing(true);
+    const form = new FormData(e.target as HTMLFormElement);
+    const shippingAddress: Record<string, string> = {
+      firstName: String(form.get('firstName') ?? ''), lastName: String(form.get('lastName') ?? ''),
+      address: String(form.get('address') ?? ''), city: String(form.get('city') ?? ''),
+      division: String(form.get('division') ?? ''), district: String(form.get('district') ?? ''),
+    };
 
-    // Simulate order processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    const { data: order, error } = await supabase.from('orders').insert({
+      user_id: user!.id, total, shipping_address: shippingAddress, status: 'pending',
+    }).select().single();
 
-    toast({
-      title: "Order placed successfully!",
-      description: "You will receive a confirmation email shortly.",
-    });
+    if (error || !order) {
+      toast({ title: 'Order failed', description: error?.message, variant: 'destructive' });
+      setIsProcessing(false);
+      return;
+    }
 
+    const items = state.items.map(i => ({
+      order_id: order.id, product_id: i.product.id, product_name: i.product.name,
+      product_image: i.product.image, price: i.product.price, quantity: i.quantity,
+    }));
+    await supabase.from('order_items').insert(items);
+
+    toast({ title: 'Order placed successfully!', description: 'Thank you for your purchase.' });
     clearCart();
     setIsProcessing(false);
-    // Redirect to order success page
-    window.location.href = '/order-success';
+    navigate('/profile');
   };
 
   return (
@@ -69,30 +84,12 @@ const Checkout: React.FC = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" required />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="address">Address</Label>
-                    <Input id="address" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="city">City</Label>
-                    <Input id="city" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="division">Division</Label>
-                    <Input id="division" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="district">District</Label>
-                    <Input id="district" required />
-                  </div>
+                  <div><Label htmlFor="firstName">First Name</Label><Input id="firstName" name="firstName" required /></div>
+                  <div><Label htmlFor="lastName">Last Name</Label><Input id="lastName" name="lastName" required /></div>
+                  <div className="md:col-span-2"><Label htmlFor="address">Address</Label><Input id="address" name="address" required /></div>
+                  <div><Label htmlFor="city">City</Label><Input id="city" name="city" required /></div>
+                  <div><Label htmlFor="division">Division</Label><Input id="division" name="division" required /></div>
+                  <div><Label htmlFor="district">District</Label><Input id="district" name="district" required /></div>
                 </div>
               </div>
 
