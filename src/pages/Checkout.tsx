@@ -84,30 +84,12 @@ const Checkout: React.FC = () => {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" required />
-                  </div>
-                  <div className="md:col-span-2">
-                    <Label htmlFor="address">Address</Label>
-                    <Input id="address" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="city">City</Label>
-                    <Input id="city" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="division">Division</Label>
-                    <Input id="division" required />
-                  </div>
-                  <div>
-                    <Label htmlFor="district">District</Label>
-                    <Input id="district" required />
-                  </div>
+                  <div><Label htmlFor="firstName">First Name</Label><Input id="firstName" name="firstName" required /></div>
+                  <div><Label htmlFor="lastName">Last Name</Label><Input id="lastName" name="lastName" required /></div>
+                  <div className="md:col-span-2"><Label htmlFor="address">Address</Label><Input id="address" name="address" required /></div>
+                  <div><Label htmlFor="city">City</Label><Input id="city" name="city" required /></div>
+                  <div><Label htmlFor="division">Division</Label><Input id="division" name="division" required /></div>
+                  <div><Label htmlFor="district">District</Label><Input id="district" name="district" required /></div>
                 </div>
               </div>
 
