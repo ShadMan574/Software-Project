@@ -31,10 +31,10 @@ const Checkout: React.FC = () => {
     e.preventDefault();
     setIsProcessing(true);
     const form = new FormData(e.target as HTMLFormElement);
-    const shippingAddress = {
-      firstName: form.get('firstName'), lastName: form.get('lastName'),
-      address: form.get('address'), city: form.get('city'),
-      division: form.get('division'), district: form.get('district'),
+    const shippingAddress: Record<string, string> = {
+      firstName: String(form.get('firstName') ?? ''), lastName: String(form.get('lastName') ?? ''),
+      address: String(form.get('address') ?? ''), city: String(form.get('city') ?? ''),
+      division: String(form.get('division') ?? ''), district: String(form.get('district') ?? ''),
     };
 
     const { data: order, error } = await supabase.from('orders').insert({
