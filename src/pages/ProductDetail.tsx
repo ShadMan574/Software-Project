@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { products } from '@/data/products';
+import { useProduct, useProducts } from '@/hooks/useProducts';
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,11 +20,11 @@ const ProductDetail: React.FC = () => {
   const { isAuthenticated, user, addToWishlist, removeFromWishlist } = useAuth();
   const { toast } = useToast();
 
-  const product = products.find(p => p.id === id);
-  
-  if (!product) {
-    return <Navigate to="/products" replace />;
-  }
+  const { product, loading } = useProduct(id);
+  const { products } = useProducts();
+
+  if (loading) return <div className="p-8 text-center">Loading...</div>;
+  if (!product) return <Navigate to="/products" replace />;
 
   const relatedProducts = products
     .filter(p => p.category === product.category && p.id !== product.id)
