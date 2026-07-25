@@ -68,12 +68,10 @@ export const Footer: React.FC = () => {
           <div>
             <h4 className="text-lg font-semibold mb-6">Customer Service</h4>
             <ul className="space-y-3">
-              <li><Link to="/help" className="text-gray-300 hover:text-primary transition-colors">Help Center</Link></li>
-              <li><Link to="/shipping" className="text-gray-300 hover:text-primary transition-colors">Shipping Info</Link></li>
-              <li><Link to="/returns" className="text-gray-300 hover:text-primary transition-colors">Returns</Link></li>
-              <li><Link to="/warranty" className="text-gray-300 hover:text-primary transition-colors">Warranty</Link></li>
-              <li><Link to="/track-order" className="text-gray-300 hover:text-primary transition-colors">Track Order</Link></li>
-              <li><Link to="/size-guide" className="text-gray-300 hover:text-primary transition-colors">Size Guide</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Help Center</Link></li>
+              <li><Link to="/profile" className="text-gray-300 hover:text-primary transition-colors">Shipping Info</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Returns</Link></li>
+              <li><Link to="/contact" className="text-gray-300 hover:text-primary transition-colors">Warranty</Link></li>
             </ul>
           </div>
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Clock } from 'lucide-react';
 import { Navigation } from '@/components/Navigation';
 import { Footer } from '@/components/Footer';
@@ -6,8 +6,66 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { writeStoredContactMessage } from '@/lib/contactMessages';
 
 const Contact: React.FC = () => {
+  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    subject: '',
+    message: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+        subject: form.subject,
+        message: form.message,
+      };
+
+      const { error } = await supabase.from('contact_messages').insert(payload);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({ title: 'Message sent', description: 'Your message has been stored successfully.' });
+      setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+    } catch (error: any) {
+      const fallbackMessage = {
+        id: `local-${Date.now()}`,
+        first_name: form.firstName,
+        last_name: form.lastName,
+        email: form.email,
+        subject: form.subject,
+        message: form.message,
+        created_at: new Date().toISOString(),
+        status: 'new',
+        source: 'local' as const,
+      };
+
+      writeStoredContactMessage(fallbackMessage);
+      toast({
+        title: 'Message sent',
+        description: 'Your message was saved locally while the contact service is temporarily unavailable.',
+      });
+      setForm({ firstName: '', lastName: '', email: '', subject: '', message: '' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -70,35 +128,35 @@ const Contact: React.FC = () => {
           <div className="bg-white rounded-xl shadow-soft p-8">
             <h3 className="text-xl font-semibold text-tech-black mb-6">Send us a message</h3>
             
-            <form className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" required />
+                  <Input id="firstName" value={form.firstName} onChange={(e) => setForm({ ...form, firstName: e.target.value })} required />
                 </div>
                 <div>
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" required />
+                  <Input id="lastName" value={form.lastName} onChange={(e) => setForm({ ...form, lastName: e.target.value })} required />
                 </div>
               </div>
               
               <div>
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" type="email" required />
+                <Input id="email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} required />
               </div>
               
               <div>
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" required />
+                <Input id="subject" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} required />
               </div>
               
               <div>
                 <Label htmlFor="message">Message</Label>
-                <Textarea id="message" rows={5} required />
+                <Textarea id="message" rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required />
               </div>
               
-              <Button type="submit" variant="electric" size="lg" className="w-full">
-                Send Message
+              <Button type="submit" variant="electric" size="lg" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Sending...' : 'Send Message'}
               </Button>
             </form>
           </div>

@@ -40,6 +40,7 @@ interface AuthContextType {
   isLoading: boolean;
   isAdmin: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  adminLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
@@ -119,6 +120,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true };
   };
 
+  const adminLogin = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { success: false, error: error.message };
+
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) {
+      await supabase.auth.signOut();
+      return { success: false, error: 'Unable to verify admin access.' };
+    }
+
+    const { data: rolesData, error: rolesError } = await supabase.from('user_roles').select('role').eq('user_id', user.id);
+    if (rolesError) {
+      await supabase.auth.signOut();
+      return { success: false, error: 'Unable to verify admin access.' };
+    }
+
+    const isAdminUser = (rolesData ?? []).some((role: any) => role.role === 'admin');
+    if (!isAdminUser) {
+      await supabase.auth.signOut();
+      return { success: false, error: 'This account does not have admin privileges.' };
+    }
+
+    return { success: true };
+  };
+
   const signup = async (name: string, email: string, password: string) => {
     const { error } = await supabase.auth.signUp({
       email, password,
@@ -180,7 +206,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAuthenticated: !!session,
       isLoading,
       isAdmin,
-      login, signup, logout, resetPassword, refreshUserData,
+      login, adminLogin, signup, logout, resetPassword, refreshUserData,
       addAddress, deleteAddress, addToWishlist, removeFromWishlist,
     }}>
       {children}

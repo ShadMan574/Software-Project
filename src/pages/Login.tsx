@@ -109,6 +109,12 @@ const Login: React.FC = () => {
               Don't have an account?{' '}
               <Link to="/signup" className="text-primary hover:text-primary/80 font-medium">Sign up</Link>
             </p>
+            <Link
+              to="/admin-login"
+              className="mt-3 inline-flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-amber-600 hover:via-orange-600 hover:to-red-600 hover:shadow-md"
+            >
+              Sign in as an Admin
+            </Link>
           </div>
         </div>
       </div>

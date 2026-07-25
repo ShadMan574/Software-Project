@@ -1,0 +1,15 @@
+<svg viewBox="0 0 768 768" xmlns="http://www.w3.org/2000/svg">
+  <!-- Blue background -->
+  <rect width="768" height="768" fill="#0071B8"/>
+  
+  <!-- White S-shaped logo -->
+  <g transform="translate(384, 384)">
+    <!-- Top right curve -->
+    <path d="M 80 -100 Q 150 -100 150 -20 Q 150 40 80 40 L -80 40 Q -150 40 -150 120 Q -150 200 -80 200 L 80 200" 
+          stroke="white" stroke-width="45" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Bottom left curve -->
+    <path d="M -80 100 Q -150 100 -150 -20 Q -150 -100 -80 -100 L 80 -100 Q 150 -100 150 -180 Q 150 -260 80 -260 L -80 -260" 
+          stroke="white" stroke-width="45" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+  </g>
+</svg>
