@@ -242,7 +242,7 @@ const Admin: React.FC = () => {
         toast({
           title: 'Refund completed',
           description: 'Refund was processed and the order is being removed.',
-          variant: 'success',
+          variant: 'success' as any,
           className: 'border-slate-200 bg-white text-slate-900 shadow-md'
         });
         setOrders(prev => prev.filter(o => o.id !== id));
