@@ -66,7 +66,7 @@ const Admin: React.FC = () => {
     const fallbackMessages = readStoredContactMessages();
 
     try {
-      const { data } = await supabase.from('contact_messages')
+      const { data } = await (supabase as any).from('contact_messages')
         .select('*')
         .order('created_at', { ascending: false });
       setMessages(mergeContactMessages((data ?? []) as any[], fallbackMessages));
@@ -79,7 +79,7 @@ const Admin: React.FC = () => {
     if (!window.confirm('Delete this message?')) return;
 
     try {
-      await supabase.from('contact_messages').delete().eq('id', id);
+      await (supabase as any).from('contact_messages').delete().eq('id', id);
     } catch {
       // Ignore remote delete errors and rely on local fallback removal.
     }
@@ -211,7 +211,7 @@ const Admin: React.FC = () => {
       let orderError: any = null;
 
       try {
-        const { data: rpcData, error } = await supabase.rpc('approve_order_refund', { order_id: id });
+        const { data: rpcData, error } = await (supabase.rpc as any)('approve_order_refund', { order_id: id });
         rpcError = error;
       } catch (e) {
         rpcError = e;
@@ -242,7 +242,7 @@ const Admin: React.FC = () => {
         toast({
           title: 'Refund completed',
           description: 'Refund was processed and the order is being removed.',
-          variant: 'success',
+          variant: 'success' as any,
           className: 'border-slate-200 bg-white text-slate-900 shadow-md'
         });
         setOrders(prev => prev.filter(o => o.id !== id));
@@ -264,7 +264,7 @@ const Admin: React.FC = () => {
           toast({
             title: 'Refund successful',
             description: 'Order marked refunded and removed from views.',
-            variant: 'success',
+            variant: 'success' as any,
             className: 'border-slate-200 bg-white text-slate-900 shadow-md'
           });
           return;

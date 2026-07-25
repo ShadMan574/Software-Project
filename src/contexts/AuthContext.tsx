@@ -43,7 +43,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   adminLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  adminSignup: (name: string, email: string, password: string, referralEmail: string) => Promise<{ success: boolean; error?: string }>;
+  adminSignup: (name: string, password: string, referralEmail: string) => Promise<{ success: boolean; error?: string; loginEmail?: string }>;
+  adminResetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   refreshUserData: () => Promise<void>;
@@ -159,28 +160,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true };
   };
 
-  const adminSignup = async (name: string, email: string, password: string, referralEmail: string) => {
+  const adminSignup = async (name: string, password: string, referralEmail: string) => {
     const trimmedReferral = referralEmail.trim().toLowerCase();
     if (!trimmedReferral) {
       return { success: false, error: 'Please enter a referral email address.' };
     }
 
-    const { data: referralUsers, error: referralError } = await supabase
+    // Referral must belong to an existing admin
+    const { data: referralProfile, error: referralError } = await supabase
       .from('profiles')
-      .select('email')
-      .ilike('email', trimmedReferral);
+      .select('id, email')
+      .ilike('email', trimmedReferral)
+      .maybeSingle();
 
-    if (referralError) {
-      return { success: false, error: referralError.message };
-    }
-
-    const isValidReferral = (referralUsers ?? []).some((profile: any) => profile.email?.toLowerCase() === trimmedReferral);
-    if (!isValidReferral) {
+    if (referralError) return { success: false, error: referralError.message };
+    if (!referralProfile) {
       return { success: false, error: 'Referral email does not match any existing admin account.' };
     }
 
-    const { error } = await supabase.auth.signUp({
-      email,
+    const { data: referralRoles } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', referralProfile.id);
+    const referralIsAdmin = (referralRoles ?? []).some((r: any) => r.role === 'admin');
+    if (!referralIsAdmin) {
+      return { success: false, error: 'Referral email does not match any existing admin account.' };
+    }
+
+    // Generate a synthetic login email for the new admin (no email field on the form)
+    const slug = name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'admin';
+    const loginEmail = `${slug}-${Date.now().toString(36)}@admin.shadman.local`;
+
+    const { data: signUpData, error } = await supabase.auth.signUp({
+      email: loginEmail,
       password,
       options: {
         emailRedirectTo: `${window.location.origin}/admin-login`,
@@ -190,16 +202,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     if (error) return { success: false, error: error.message };
 
-    try {
-      const { data: userData } = await supabase.auth.getUser();
-      const userId = userData.user?.id;
-      if (userId) {
-        await supabase.from('user_roles').insert({ user_id: userId, role: 'admin' });
-      }
-    } catch {
-      // Ignore role assignment errors; the signup still proceeds.
+    const userId = signUpData.user?.id;
+    if (userId) {
+      await supabase.from('user_roles').upsert({ user_id: userId, role: 'admin' });
+      await supabase.from('admin_signups').insert({
+        user_id: userId,
+        name,
+        login_email: loginEmail,
+        referral_email: trimmedReferral,
+      });
     }
 
+    return { success: true, loginEmail };
+  };
+
+  const adminResetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) return { success: false, error: error.message };
     return { success: true };
   };
 
@@ -252,7 +273,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAuthenticated: !!session,
       isLoading,
       isAdmin,
-      login, adminLogin, signup, adminSignup, logout, resetPassword, refreshUserData,
+      login, adminLogin, signup, adminSignup, logout, resetPassword, adminResetPassword, refreshUserData,
       addAddress, deleteAddress, addToWishlist, removeFromWishlist,
     }}>
       {children}
