@@ -34,7 +34,7 @@ const Contact: React.FC = () => {
         message: form.message,
       };
 
-      const { error } = await supabase.from('contact_messages').insert(payload);
+      const { error } = await (supabase as any).from('contact_messages').insert(payload);
 
       if (error) {
         throw error;
