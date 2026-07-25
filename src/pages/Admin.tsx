@@ -79,7 +79,7 @@ const Admin: React.FC = () => {
     if (!window.confirm('Delete this message?')) return;
 
     try {
-      await supabase.from('contact_messages').delete().eq('id', id);
+      await (supabase as any).from('contact_messages').delete().eq('id', id);
     } catch {
       // Ignore remote delete errors and rely on local fallback removal.
     }
