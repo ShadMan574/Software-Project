@@ -211,7 +211,7 @@ const Admin: React.FC = () => {
       let orderError: any = null;
 
       try {
-        const { data: rpcData, error } = await supabase.rpc('approve_order_refund', { order_id: id });
+        const { data: rpcData, error } = await (supabase.rpc as any)('approve_order_refund', { order_id: id });
         rpcError = error;
       } catch (e) {
         rpcError = e;
