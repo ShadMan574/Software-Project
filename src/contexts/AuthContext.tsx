@@ -43,7 +43,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   adminLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  adminSignup: (name: string, email: string, password: string, referralEmail: string) => Promise<{ success: boolean; error?: string }>;
+  adminSignup: (name: string, password: string, referralEmail: string) => Promise<{ success: boolean; error?: string; loginEmail?: string }>;
+  adminResetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   refreshUserData: () => Promise<void>;
