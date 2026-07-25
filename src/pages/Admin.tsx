@@ -66,7 +66,7 @@ const Admin: React.FC = () => {
     const fallbackMessages = readStoredContactMessages();
 
     try {
-      const { data } = await supabase.from('contact_messages')
+      const { data } = await (supabase as any).from('contact_messages')
         .select('*')
         .order('created_at', { ascending: false });
       setMessages(mergeContactMessages((data ?? []) as any[], fallbackMessages));
