@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import type { Session } from '@supabase/supabase-js';
 
+
 export interface Address {
   id: string;
   type: 'shipping' | 'billing';
@@ -42,6 +43,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   adminLogin: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   signup: (name: string, email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  adminSignup: (name: string, email: string, password: string, referralEmail: string) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ success: boolean; error?: string }>;
   refreshUserData: () => Promise<void>;
@@ -157,6 +159,50 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return { success: true };
   };
 
+  const adminSignup = async (name: string, email: string, password: string, referralEmail: string) => {
+    const trimmedReferral = referralEmail.trim().toLowerCase();
+    if (!trimmedReferral) {
+      return { success: false, error: 'Please enter a referral email address.' };
+    }
+
+    const { data: referralUsers, error: referralError } = await supabase
+      .from('profiles')
+      .select('email')
+      .ilike('email', trimmedReferral);
+
+    if (referralError) {
+      return { success: false, error: referralError.message };
+    }
+
+    const isValidReferral = (referralUsers ?? []).some((profile: any) => profile.email?.toLowerCase() === trimmedReferral);
+    if (!isValidReferral) {
+      return { success: false, error: 'Referral email does not match any existing admin account.' };
+    }
+
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/admin-login`,
+        data: { name, is_admin_signup: true },
+      },
+    });
+
+    if (error) return { success: false, error: error.message };
+
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
+      if (userId) {
+        await supabase.from('user_roles').insert({ user_id: userId, role: 'admin' });
+      }
+    } catch {
+      // Ignore role assignment errors; the signup still proceeds.
+    }
+
+    return { success: true };
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
   };
@@ -206,7 +252,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isAuthenticated: !!session,
       isLoading,
       isAdmin,
-      login, adminLogin, signup, logout, resetPassword, refreshUserData,
+      login, adminLogin, signup, adminSignup, logout, resetPassword, refreshUserData,
       addAddress, deleteAddress, addToWishlist, removeFromWishlist,
     }}>
       {children}

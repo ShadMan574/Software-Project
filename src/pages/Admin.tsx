@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { categories } from '@/data/products';
 import { Trash2, Pencil } from 'lucide-react';
+import { restoreOrderStock } from '@/lib/orderStock';
 import { mergeContactMessages, readStoredContactMessages } from '@/lib/contactMessages';
 import {
   Dialog,
@@ -150,6 +151,15 @@ const Admin: React.FC = () => {
 
     const { error } = await supabase.from('orders').update({ status }).eq('id', id);
     if (error) return toast({ title: 'Error', description: error.message, variant: 'destructive' });
+
+    if (status === 'cancelled') {
+      try {
+        await restoreOrderStock(id);
+      } catch (restoreError: any) {
+        console.error('Unable to restore stock after order cancellation:', restoreError);
+      }
+    }
+
     toast({ title: 'Order updated' });
     loadOrders();
   };
@@ -243,6 +253,11 @@ const Admin: React.FC = () => {
         // If deletion failed, try to mark the order refunded so it is hidden from both dashboards.
         const { error: markError } = await supabase.from('orders').update({ status: 'refunded' }).eq('id', id);
         if (!markError) {
+          try {
+            await restoreOrderStock(id);
+          } catch (restoreError: any) {
+            console.error('Unable to restore stock after refund:', restoreError);
+          }
           setOrders(prev => prev.filter(o => o.id !== id));
           setRefundBannerVariant('success');
           setRefundBannerMessage('Refund successful — the order is marked refunded and removed from views.');
@@ -278,6 +293,11 @@ const Admin: React.FC = () => {
       }
 
       // Confirmed removed server-side — remove from UI and inform user
+      try {
+        await restoreOrderStock(id);
+      } catch (restoreError: any) {
+        console.error('Unable to restore stock after refund:', restoreError);
+      }
       setOrders(prev => prev.filter(o => o.id !== id));
       setRefundBannerVariant('success');
       setRefundBannerMessage('Refund successful — the order is being removed from admin dashboard and customer history.');

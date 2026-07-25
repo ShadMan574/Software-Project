@@ -11,6 +11,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { deductOrderStock } from '@/lib/orderStock';
 
 const Checkout: React.FC = () => {
   const { state, clearCart } = useCart();
@@ -52,6 +53,16 @@ const Checkout: React.FC = () => {
       product_image: i.product.image, price: i.product.price, quantity: i.quantity,
     }));
     await supabase.from('order_items').insert(items);
+
+    try {
+      await deductOrderStock(order.id);
+    } catch (stockError: any) {
+      await supabase.from('orders').delete().eq('id', order.id);
+      await supabase.from('order_items').delete().eq('order_id', order.id);
+      toast({ title: 'Order failed', description: stockError?.message ?? 'Not enough stock available.', variant: 'destructive' });
+      setIsProcessing(false);
+      return;
+    }
 
     toast({ title: 'Order placed successfully!', description: 'Thank you for your purchase.' });
     clearCart();

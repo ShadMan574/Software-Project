@@ -8,6 +8,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { restoreOrderStock } from '@/lib/orderStock';
 
 const Profile: React.FC = () => {
   const { isAuthenticated, isLoading, user, logout, isAdmin, refreshUserData } = useAuth();
