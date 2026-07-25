@@ -264,7 +264,7 @@ const Admin: React.FC = () => {
           toast({
             title: 'Refund successful',
             description: 'Order marked refunded and removed from views.',
-            variant: 'success',
+            variant: 'success' as any,
             className: 'border-slate-200 bg-white text-slate-900 shadow-md'
           });
           return;
